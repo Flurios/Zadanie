@@ -65,7 +65,7 @@
             this.columnHeader3,
             this.columnHeader4});
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(15, 46);
+            this.listView1.Location = new System.Drawing.Point(15, 45);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(724, 382);
             this.listView1.TabIndex = 2;
@@ -80,12 +80,12 @@
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "Дата изменения";
+            this.columnHeader2.Text = "Тип";
             this.columnHeader2.Width = 108;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Тип";
+            this.columnHeader3.Text = "Дата изменения";
             this.columnHeader3.Width = 108;
             // 
             // columnHeader4

@@ -6,9 +6,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WindowsFormsApp7
 {
@@ -30,17 +32,27 @@ namespace WindowsFormsApp7
 
         private void button1_Click(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
             string path = textBox1.Text;
-            string[] files = Directory.GetFiles(path);
-            foreach (string file in files)
+            DirectoryInfo dir = new DirectoryInfo(path);
+            FileInfo[] files = dir.GetFiles();
+            for (int numFiles = 0; numFiles < files.Length; numFiles++)
+
             {
-                ListViewItem lvi = new ListViewItem();
-                lvi.Text = file.Remove(0, file.LastIndexOf('\\') + 1);
-                listView1.Items.Add(lvi);
+                string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
+                string ext = Path.GetExtension(files[numFiles].Name);
+                long len = files.Length;
+                listView1.Items.Add(nameWithoutExt);
+                listView1.Items[numFiles].SubItems.Add(ext);
+                listView1.Items[numFiles].SubItems.Add(len.ToString());
+
             }
+
+
 
 
         }
     }
 }
+
 
