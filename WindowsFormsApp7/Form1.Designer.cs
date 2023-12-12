@@ -80,12 +80,12 @@
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "Тип";
+            this.columnHeader2.Text = "Дата изменения";
             this.columnHeader2.Width = 108;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Дата изменения";
+            this.columnHeader3.Text = "Тип";
             this.columnHeader3.Width = 108;
             // 
             // columnHeader4
