@@ -32,6 +32,8 @@ namespace WindowsFormsApp7
 
         private void button1_Click(object sender, EventArgs e)
         {
+
+
             listView1.Items.Clear();
             string path = textBox1.Text;
             DirectoryInfo dir = new DirectoryInfo(path);
@@ -40,11 +42,12 @@ namespace WindowsFormsApp7
 
             {
                 string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
-                string ext = Path.GetExtension(files[numFiles].Name);
-                long len = files.Length;
+
+
                 listView1.Items.Add(nameWithoutExt);
-                listView1.Items[numFiles].SubItems.Add(ext);
-                listView1.Items[numFiles].SubItems.Add(len.ToString());
+                listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
+                listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
+                listView1.Items[numFiles].SubItems.Add(files[numFiles].Length.ToString());
 
             }
 
