@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -47,8 +48,9 @@ namespace WindowsFormsApp7
                 listView1.Items.Add(nameWithoutExt);
                 listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
                 listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
-                listView1.Items[numFiles].SubItems.Add(files[numFiles].Length.ToString());
+                listView1.Items[numFiles].SubItems.Add($"{(files[numFiles].Length/1024).ToString()} Кб");
 
+                
             }
 
 
