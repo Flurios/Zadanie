@@ -48,7 +48,7 @@ namespace WindowsFormsApp7
                 listView1.Items.Add(nameWithoutExt);
                 listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
                 listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
-                listView1.Items[numFiles].SubItems.Add($"{(files[numFiles].Length/1024).ToString()} Кб");
+                listView1.Items[numFiles].SubItems.Add($"{files[numFiles].Length/1024} Кб");
 
                 
             }
