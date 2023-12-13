@@ -37,23 +37,46 @@ namespace WindowsFormsApp7
 
             listView1.Items.Clear();
             string path = textBox1.Text;
-            DirectoryInfo dir = new DirectoryInfo(path);
-            FileInfo[] files = dir.GetFiles();
-            for (int numFiles = 0; numFiles < files.Length; numFiles++)
-
+            if (string.IsNullOrEmpty(textBox1.Text))
             {
-                string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
 
-
-                listView1.Items.Add(nameWithoutExt);
-                listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
-                listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
-                listView1.Items[numFiles].SubItems.Add($"{files[numFiles].Length/1024} Кб");
-
-                
+                MessageBox.Show(
+                    "Ничего не введено",
+                    "Сообщение",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);
             }
+            else if (Directory.Exists(path))           
+            {
+                DirectoryInfo dir = new DirectoryInfo(path);
+                FileInfo[] files = dir.GetFiles();
+                for (int numFiles = 0; numFiles < files.Length; numFiles++)
+
+                {
+                    string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
 
 
+                    listView1.Items.Add(nameWithoutExt);
+                    listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
+                    listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
+                    listView1.Items[numFiles].SubItems.Add($"{files[numFiles].Length / 1024} Кб");
+
+
+                }
+
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Введен неправильный формат",
+                    "Сообщение",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Error,
+                     MessageBoxDefaultButton.Button1,
+                     MessageBoxOptions.DefaultDesktopOnly);
+            }
 
 
         }
