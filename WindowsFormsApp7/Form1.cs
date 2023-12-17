@@ -17,6 +17,7 @@ namespace WindowsFormsApp7
 {
     public partial class Form1 : Form
     {
+        private string previousText;
         public Form1()
         {
             InitializeComponent();
@@ -33,7 +34,19 @@ namespace WindowsFormsApp7
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            if (textBox1.Text == previousText)
+            {
+                MessageBox.Show(
+                    "Информация о файлах уже выгружена!",
+                    "Сообщение",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);
+                return;
+            }
+            
+            previousText = textBox1.Text;
 
             listView1.Items.Clear();
             string path = textBox1.Text;
@@ -44,7 +57,7 @@ namespace WindowsFormsApp7
                     "Ничего не введено",
                     "Сообщение",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
+                    MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.DefaultDesktopOnly);
             }
@@ -67,10 +80,11 @@ namespace WindowsFormsApp7
                 }
 
             }
+           
             else
             {
                 MessageBox.Show(
-                    "Введен неправильный формат",
+                    "Введен неправильный путь",
                     "Сообщение",
                      MessageBoxButtons.OK,
                      MessageBoxIcon.Error,
