@@ -52,7 +52,6 @@ namespace WindowsFormsApp7
             string path = textBox1.Text;
             if (string.IsNullOrEmpty(textBox1.Text))
             {
-
                 MessageBox.Show(
                     "Ничего не введено",
                     "Сообщение",
@@ -65,22 +64,25 @@ namespace WindowsFormsApp7
             {
                 DirectoryInfo dir = new DirectoryInfo(path);
                 FileInfo[] files = dir.GetFiles();
+                DirectoryInfo[] dirs = dir.GetDirectories();                             
                 for (int numFiles = 0; numFiles < files.Length; numFiles++)
-
                 {
                     string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
-
-
+                    double sizefile = (files[numFiles].Length);
+                    sizefile = Math.Ceiling(sizefile / 1024);                  
                     listView1.Items.Add(nameWithoutExt);
                     listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
                     listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
-                    listView1.Items[numFiles].SubItems.Add($"{files[numFiles].Length / 1024} Кб");
-
-
+                    listView1.Items[numFiles].SubItems.Add($"{(sizefile)} Кб");
                 }
-
-            }
-           
+                for (int numDir = 0; numDir < dirs.Length; numDir++)
+                {
+                    listView1.Items.Add(dirs[numDir].Name);
+                    listView1.Items[numDir].SubItems.Add("");
+                    listView1.Items[numDir].SubItems.Add("Папка");
+                    listView1.Items[numDir].SubItems.Add("");
+                }
+            }   
             else
             {
                 MessageBox.Show(
@@ -91,8 +93,6 @@ namespace WindowsFormsApp7
                      MessageBoxDefaultButton.Button1,
                      MessageBoxOptions.DefaultDesktopOnly);
             }
-
-
         }
     }
 }
