@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Input;
 
 namespace WindowsFormsApp7
 {
@@ -32,6 +33,7 @@ namespace WindowsFormsApp7
 
         }
 
+
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == previousText)
@@ -45,7 +47,7 @@ namespace WindowsFormsApp7
                     MessageBoxOptions.DefaultDesktopOnly);
                 return;
             }
-            
+           
             previousText = textBox1.Text;
 
             listView1.Items.Clear();
@@ -60,16 +62,16 @@ namespace WindowsFormsApp7
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.DefaultDesktopOnly);
             }
-            else if (Directory.Exists(path))           
+            else if (Directory.Exists(path))
             {
                 DirectoryInfo dir = new DirectoryInfo(path);
                 FileInfo[] files = dir.GetFiles();
-                DirectoryInfo[] dirs = dir.GetDirectories();                             
+                DirectoryInfo[] dirs = dir.GetDirectories();                               
                 for (int numFiles = 0; numFiles < files.Length; numFiles++)
                 {
                     string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
                     double sizefile = (files[numFiles].Length);
-                    sizefile = Math.Ceiling(sizefile / 1024);                  
+                    sizefile = Math.Ceiling(sizefile / 1024);
                     listView1.Items.Add(nameWithoutExt);
                     listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
                     listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
@@ -81,8 +83,9 @@ namespace WindowsFormsApp7
                     listView1.Items[numDir].SubItems.Add("");
                     listView1.Items[numDir].SubItems.Add("Папка");
                     listView1.Items[numDir].SubItems.Add("");
+
                 }
-            }   
+            }
             else
             {
                 MessageBox.Show(
@@ -94,7 +97,52 @@ namespace WindowsFormsApp7
                      MessageBoxOptions.DefaultDesktopOnly);
             }
         }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {            string directoryPath = textBox1.Text;
+            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+            DirectoryInfo parentDirectoryInfo = directoryInfo.Parent;
+            if (parentDirectoryInfo != null)
+            {
+                textBox1.Text = parentDirectoryInfo.FullName;
+                button1_Click(sender, e);
+            }
+
+        }
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListViewHitTestInfo hitTest = listView1.HitTest(e.Location);
+            if (hitTest.Item != null)
+            {
+                string selectedPath = hitTest.Item.Text;             
+                listView1.Items.Clear();
+               
+                DirectoryInfo dir = new DirectoryInfo(selectedPath);
+                FileInfo[] files = dir.GetFiles();
+                DirectoryInfo[] dirs = dir.GetDirectories();
+                for (int numFiles = 0; numFiles < files.Length; numFiles++)
+                {
+                    string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
+                    double sizefile = (files[numFiles].Length);
+                    sizefile = Math.Ceiling(sizefile / 1024);
+                    listView1.Items.Add(nameWithoutExt);
+                    listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
+                    listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
+                    listView1.Items[numFiles].SubItems.Add($"{(sizefile)} Кб");
+                }
+
+                for (int numDir = 0; numDir < dirs.Length; numDir++)
+                {
+                    listView1.Items.Add(dirs[numDir].Name);
+                    listView1.Items[numDir].SubItems.Add("");
+                    listView1.Items[numDir].SubItems.Add("Папка");
+                    listView1.Items[numDir].SubItems.Add("");
+                }
+
+            }
+        }
     }
+    
 }
 
 
