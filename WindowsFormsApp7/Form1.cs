@@ -53,7 +53,7 @@ namespace WindowsFormsApp7
 
             listView1.Items.Clear();
             string path = textBox1.Text;
-            if (string.IsNullOrEmpty(textBox1.Text))
+            if (string.IsNullOrEmpty(path))
             {
                 MessageBox.Show(
                     "Ничего не введено",
@@ -106,12 +106,12 @@ namespace WindowsFormsApp7
             string directoryPath = textBox1.Text;
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
             DirectoryInfo parentDirectoryInfo = directoryInfo.Parent;
-            if (parentDirectoryInfo != null)
+            if (Directory.Exists(textBox1.Text))
             {
                 textBox1.Text = parentDirectoryInfo.FullName;
                 button1_Click(sender, e);
             }
-
+            
         }
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
