@@ -18,8 +18,7 @@ namespace WindowsFormsApp7
 {
     public partial class Form1 : Form
     {
-        private string previousText;
-        int Numberline;
+        private string previousText;        
         public Form1()
         {
             InitializeComponent();
@@ -37,6 +36,8 @@ namespace WindowsFormsApp7
 
         private void button1_Click(object sender, EventArgs e)
         {
+            int Numberline = 0;
+
             if (textBox1.Text == previousText)
             {
                 MessageBox.Show(
@@ -71,9 +72,9 @@ namespace WindowsFormsApp7
                 for (int numDir = 0; numDir < dirs.Length; numDir++)
                 {
                     listView1.Items.Add(dirs[numDir].Name);
-                    listView1.Items[numDir].SubItems.Add("");
+                    listView1.Items[numDir].SubItems.Add(dirs[numDir].LastAccessTime.ToString());
                     listView1.Items[numDir].SubItems.Add("Папка");
-                    listView1.Items[numDir].SubItems.Add("");
+                    listView1.Items[numDir].SubItems.Add($"{CalculateFolderSize(dirs[numDir].FullName)}Кб");
                     Numberline = numDir + 1;
                 }
                 for (int numFiles = 0; numFiles < files.Length; numFiles++)
@@ -82,12 +83,11 @@ namespace WindowsFormsApp7
                     double sizefile = (files[numFiles].Length);
                     sizefile = Math.Ceiling(sizefile / 1024);
                     listView1.Items.Add(nameWithoutExt);
-                    listView1.Items[numFiles + Numberline].SubItems.Add(files[numFiles].LastAccessTime.ToString());
-                    listView1.Items[numFiles + Numberline].SubItems.Add(files[numFiles].Extension);
-                    listView1.Items[numFiles + Numberline].SubItems.Add($"{(sizefile)} Кб");
-                    
-                }
-               
+                    listView1.Items[Numberline].SubItems.Add(files[numFiles].LastAccessTime.ToString());
+                    listView1.Items[Numberline].SubItems.Add(files[numFiles].Extension);
+                    listView1.Items[Numberline].SubItems.Add($"{(sizefile)} Кб");
+                    Numberline++;                    
+                }               
             }
             else
             {
@@ -101,6 +101,20 @@ namespace WindowsFormsApp7
             }
         }
 
+        private string CalculateFolderSize(string dirpath)
+        {
+            string[] files = Directory.GetFiles(dirpath, "*", SearchOption.AllDirectories);
+            double folderSize = 0;
+
+            foreach (string file in files)
+            {               
+                FileInfo fileInfo = new FileInfo(file);              
+                folderSize += fileInfo.Length;
+            }
+            folderSize = Math.Ceiling(folderSize / 1024);
+            return folderSize.ToString();
+        }
+    
         private void button1_Click_1(object sender, EventArgs e)
         {
             string directoryPath = textBox1.Text;
@@ -127,40 +141,19 @@ namespace WindowsFormsApp7
             {
                 textBox1.Text = textBox1.Text + @"\" + Namefile;                 
                 button1_Click(sender, e);
-            }
-                       
-               
-            
+            }             
+              
+           
+           
+        }
 
-            /*ListViewHitTestInfo hitTest = listView1.HitTest(e.Location);
-            if (hitTest.Item != null)
-            {
-                string selectedPath = hitTest.Item.Text;
-                listView1.Items.Clear();
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
 
-                DirectoryInfo dir = new DirectoryInfo(selectedPath);
-                FileInfo[] files = dir.GetFiles();
-                DirectoryInfo[] dirs = dir.GetDirectories();
-                for (int numFiles = 0; numFiles < files.Length; numFiles++)
-                {
-                    string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
-                    double sizefile = (files[numFiles].Length);
-                    sizefile = Math.Ceiling(sizefile / 1024);
-                    listView1.Items.Add(nameWithoutExt);
-                    listView1.Items[numFiles].SubItems.Add(files[numFiles].LastAccessTime.ToString());
-                    listView1.Items[numFiles].SubItems.Add(files[numFiles].Extension);
-                    listView1.Items[numFiles].SubItems.Add($"{(sizefile)} Кб");
-                }
+        }
 
-                for (int numDir = 0; numDir < dirs.Length; numDir++)
-                {
-                    listView1.Items.Add(dirs[numDir].Name);
-                    listView1.Items[numDir].SubItems.Add("");
-                    listView1.Items[numDir].SubItems.Add("Папка");
-                    listView1.Items[numDir].SubItems.Add("");
-                }
-
-            }*/
+        private void label1_Click(object sender, EventArgs e)
+        {
 
         }
     }
