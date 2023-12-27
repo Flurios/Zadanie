@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Windows.Input;
+using System.Runtime.CompilerServices;
+using System.Linq.Expressions;
 
 namespace WindowsFormsApp7
 {
@@ -72,61 +74,43 @@ namespace WindowsFormsApp7
 
                     listView1.Items.Insert(0, new ListViewItem(new string[] { "...", "", "", "" }));
                 }
-                string[] dirs = Directory.GetDirectories(path);
-                string[] files = Directory.GetFiles(path);
-
-
-                foreach (string directory in dirs)
+                try
                 {
-                    DirectoryInfo dir = new DirectoryInfo(directory);
-                    listView1.Items.Add(new ListViewItem(new string[] { dir.Name, "-", "Папка", $"{CalculateFolderSize(dir.FullName)} Кб" }));
+                    string[] dirs = Directory.GetDirectories(path);
+                    
+
+
+                    foreach (string directory in dirs)
+                    {
+                        DirectoryInfo dir = new DirectoryInfo(directory);
+                        listView1.Items.Add(new ListViewItem(new string[] { dir.Name, "-", "Папка", $"{Math.Ceiling(CalculateFolderSize(dir.FullName)/1024)} Кб" }));
+                    }
                 }
+                catch { listView1.Items.Add("Папка недоступна"); }
 
-
-                foreach (string file in files)
+                try
                 {
-                    FileInfo fileInfo = new FileInfo(file);
-                    double sizeFile = fileInfo.Length;
-                    sizeFile = Math.Ceiling(sizeFile / 1024);
-                    listView1.Items.Add(new ListViewItem(new string[] { fileInfo.Name, fileInfo.LastWriteTime.ToString(), fileInfo.Extension, sizeFile.ToString() + " Кб", }));
-                }
 
+
+                    string[] files = Directory.GetFiles(path);
+                    foreach (string file in files)
+                    {
+
+                        FileInfo fileInfo = new FileInfo(file);
+                        double sizeFile = fileInfo.Length;
+                        listView1.Items.Add(new ListViewItem(new string[] { fileInfo.Name, fileInfo.LastWriteTime.ToString(), fileInfo.Extension, $"{Math.Ceiling(sizeFile / 1024)} Кб" }));
+
+
+                    }
+
+                }
+                catch {  }
+                        
+
+                
             }
 
-            /*  DirectoryInfo dir = new DirectoryInfo(path);
-               FileInfo[] files = dir.GetFiles();
-               DirectoryInfo[] dirs = dir.GetDirectories();
-
-                  if (Directory.GetParent(path) != null)
-                  {
-
-                      listView1.Items.Add("...");
-                      listView1.Items[0].SubItems.Add("");
-                      listView1.Items[0].SubItems.Add("");
-                      listView1.Items[0].SubItems.Add("");
-                      NLine++;
-                  }
-               for (int numDir = 0; numDir < dirs.Length; numDir++)
-               {                    
-                   listView1.Items.Add(dirs[numDir].Name);
-                   listView1.Items[NLine].SubItems.Add(dirs[numDir].LastAccessTime.ToString());
-                   listView1.Items[NLine].SubItems.Add("Папка");
-                   listView1.Items[NLine].SubItems.Add($"{CalculateFolderSize(dirs[numDir].FullName)} Кб");
-                   NLine++;
-               }
-                  Numberline = NLine;
-               for (int numFiles = 0; numFiles < files.Length; numFiles++)
-               {
-                   string nameWithoutExt = Path.GetFileNameWithoutExtension(files[numFiles].Name);
-                   double sizefile = (files[numFiles].Length);
-                   sizefile = Math.Ceiling(sizefile / 1024);
-                   listView1.Items.Add(nameWithoutExt);
-                   listView1.Items[Numberline].SubItems.Add(files[numFiles].LastAccessTime.ToString());
-                   listView1.Items[Numberline].SubItems.Add(files[numFiles].Extension);
-                   listView1.Items[Numberline].SubItems.Add($"{(sizefile)} Кб");
-                   Numberline++;                    
-               }               
-           }*/
+           
             else
             {
                 MessageBox.Show(
@@ -137,39 +121,40 @@ namespace WindowsFormsApp7
                      MessageBoxDefaultButton.Button1,
                      MessageBoxOptions.DefaultDesktopOnly);
             }
-            
-        }
-        public static long CalculateFolderSize(string dirpath)
-        {
 
+        }
+        private double CalculateFolderSize(string dirpath)
+        {
             DirectoryInfo directoryInfo = new DirectoryInfo(dirpath);
-            long totalSize = 0;
-            string exit = "N/a".ToString(); 
+            double totalSize = 0;
+            //double size = 0;         
+
             try
             {
-                DirectoryInfo[] directories = directoryInfo.GetDirectories();
+
                 FileInfo[] files = directoryInfo.GetFiles();
 
                 foreach (FileInfo file in files)
                 {
-                    totalSize += file.Length;
+                   // size = file.Length;
+                   // totalSize = totalSize + Math.Ceiling(size / 1024);
+                   totalSize += file.Length;
                 }
 
-                foreach (DirectoryInfo dir in directories)
-                {
-                    totalSize += CalculateFolderSize(dir.FullName);
-                }
-
-                return totalSize;
             }
-            catch
+            catch { return totalSize; }
+
+            DirectoryInfo[] directories = directoryInfo.GetDirectories();
+
+            foreach (DirectoryInfo dir in directories)
             {
-                return 0;
-
+                totalSize += CalculateFolderSize(dir.FullName);
             }
-
-
+            return totalSize;
+        
+    
         }
+
         private void button1_Click_1(object sender, EventArgs e)
         {
             /*  string directoryPath = textBox1.Text;
