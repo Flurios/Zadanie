@@ -71,15 +71,11 @@ namespace WindowsFormsApp7
             {
                 if (Directory.GetParent(path) != null)
                 {
-
                     listView1.Items.Insert(0, new ListViewItem(new string[] { "...", "", "", "" }));
                 }
                 try
                 {
                     string[] dirs = Directory.GetDirectories(path);
-                    
-
-
                     foreach (string directory in dirs)
                     {
                         DirectoryInfo dir = new DirectoryInfo(directory);
@@ -90,27 +86,17 @@ namespace WindowsFormsApp7
 
                 try
                 {
-
-
                     string[] files = Directory.GetFiles(path);
                     foreach (string file in files)
                     {
-
                         FileInfo fileInfo = new FileInfo(file);
                         double sizeFile = fileInfo.Length;
                         listView1.Items.Add(new ListViewItem(new string[] { fileInfo.Name, fileInfo.LastWriteTime.ToString(), fileInfo.Extension, $"{Math.Ceiling(sizeFile / 1024)} Кб" }));
-
-
                     }
 
                 }
-                catch {  }
-                        
-
-                
-            }
-
-           
+                catch {  }      
+            }             
             else
             {
                 MessageBox.Show(
@@ -121,38 +107,30 @@ namespace WindowsFormsApp7
                      MessageBoxDefaultButton.Button1,
                      MessageBoxOptions.DefaultDesktopOnly);
             }
-
         }
         private double CalculateFolderSize(string dirpath)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(dirpath);
             double totalSize = 0;
-            //double size = 0;         
-
+            //double size = 0;  
             try
             {
-
                 FileInfo[] files = directoryInfo.GetFiles();
-
                 foreach (FileInfo file in files)
                 {
                    // size = file.Length;
                    // totalSize = totalSize + Math.Ceiling(size / 1024);
                    totalSize += file.Length;
                 }
-
             }
             catch { return totalSize; }
 
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
-
             foreach (DirectoryInfo dir in directories)
             {
                 totalSize += CalculateFolderSize(dir.FullName);
             }
-            return totalSize;
-        
-    
+            return totalSize;           
         }
 
         private void button1_Click_1(object sender, EventArgs e)
