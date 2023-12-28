@@ -30,16 +30,17 @@ namespace WindowsFormsApp7
         {
 
         }
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)   // строка куда вводим путь
         {
 
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e) // функция клика кнопки "поиска"
         {
             // int Numberline = 0;
             // int NLine = 0;
+            
 
             if (textBox1.Text == previousText)
             {
@@ -52,6 +53,7 @@ namespace WindowsFormsApp7
                     MessageBoxOptions.DefaultDesktopOnly);
                 return;
             }
+
 
             previousText = textBox1.Text;
 
@@ -71,7 +73,7 @@ namespace WindowsFormsApp7
             {
                 if (Directory.GetParent(path) != null)
                 {
-                    listView1.Items.Insert(0, new ListViewItem(new string[] { "...", "", "", "" }));
+                    listView1.Items.Insert(0, new ListViewItem(new string[] { "...", "", "", "" }));                        // выводим троеточие если существует путь наверх (назад по папкам)
                 }
                 try
                 {
@@ -79,7 +81,8 @@ namespace WindowsFormsApp7
                     foreach (string directory in dirs)
                     {
                         DirectoryInfo dir = new DirectoryInfo(directory);
-                        listView1.Items.Add(new ListViewItem(new string[] { dir.Name, "-", "Папка", $"{Math.Ceiling(CalculateFolderSize(dir.FullName)/1024)} Кб" }));
+                        listView1.Items.Add(new ListViewItem(new string[] { dir.Name, "-", "Папка", $"{CalculateFolderSize(dir.FullName)} Кб" })).BackColor = Color.Gainsboro;         // вывод папок 
+
                     }
                 }
                 catch { listView1.Items.Add("Папка недоступна"); }
@@ -91,12 +94,12 @@ namespace WindowsFormsApp7
                     {
                         FileInfo fileInfo = new FileInfo(file);
                         double sizeFile = fileInfo.Length;
-                        listView1.Items.Add(new ListViewItem(new string[] { fileInfo.Name, fileInfo.LastWriteTime.ToString(), fileInfo.Extension, $"{Math.Ceiling(sizeFile / 1024)} Кб" }));
+                        listView1.Items.Add(new ListViewItem(new string[] { fileInfo.Name, fileInfo.LastWriteTime.ToString(), fileInfo.Extension, $"{Math.Ceiling(sizeFile / 1024)} Кб" }));    // вывод файлов и перевод размера в Кб
                     }
-
                 }
-                catch {  }      
-            }             
+                catch { }
+            }
+
             else
             {
                 MessageBox.Show(
@@ -108,19 +111,19 @@ namespace WindowsFormsApp7
                      MessageBoxOptions.DefaultDesktopOnly);
             }
         }
-        private double CalculateFolderSize(string dirpath)
+        private double CalculateFolderSize(string dirpath)    // высчитывание размера папки и перевод в Кб
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(dirpath);
             double totalSize = 0;
-            //double size = 0;  
+            double size = 0;
             try
             {
                 FileInfo[] files = directoryInfo.GetFiles();
                 foreach (FileInfo file in files)
                 {
-                   // size = file.Length;
-                   // totalSize = totalSize + Math.Ceiling(size / 1024);
-                   totalSize += file.Length;
+                    size = file.Length;
+                    totalSize = totalSize + Math.Ceiling(size / 1024);
+
                 }
             }
             catch { return totalSize; }
@@ -130,7 +133,7 @@ namespace WindowsFormsApp7
             {
                 totalSize += CalculateFolderSize(dir.FullName);
             }
-            return totalSize;           
+            return totalSize;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -153,21 +156,43 @@ namespace WindowsFormsApp7
         private void listView1_MouseDoubleClick_1(object sender, MouseEventArgs e)
         {
             int ind = listView1.SelectedIndices[0];
-            string test = listView1.Items[ind].SubItems[2].Text;
-            string Namefile = listView1.Items[ind].Text;
+            string test = listView1.Items[ind].SubItems[2].Text;   // информация в столбце "Тип"
+            string Namefolder = listView1.Items[ind].Text;        // считывание названия папки
 
             if (test == "Папка")
             {
-                textBox1.Text = textBox1.Text + @"\" + Namefile;
-                button1_Click(sender, e);
+                try                                                                              // проверяем доступность поддиректории
+                {
+                    textBox1.Text = textBox1.Text + @"\" + Namefolder;
+                    string directoryPath = textBox1.Text;
+                    DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                    DirectoryInfo[] directories = directoryInfo.GetDirectories();
+
+                    button1_Click(sender, e);
+                }                                                                   
+                catch
+                {                                                                                 // если поддиректории недоступны выводим ошибку и возращаем путь    
+                    string directoryPath = textBox1.Text;
+                    DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                    DirectoryInfo parentDirectoryInfo = directoryInfo.Parent;
+                    textBox1.Text = parentDirectoryInfo.FullName;
+
+                    MessageBox.Show(
+                    "Ошибка открытия папки",
+                    "Сообщение",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);
+                }
             }
-            else if (ind == 0)
+            else if (ind == 0)                                                                    // проверка клика по первой строчке 
             {
                 string directoryPath = textBox1.Text;
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
                 DirectoryInfo parentDirectoryInfo = directoryInfo.Parent;
 
-                if (Directory.Exists(textBox1.Text))
+                if (Directory.Exists(textBox1.Text))                                              // проверка существования пути
                 {
                     textBox1.Text = parentDirectoryInfo.FullName;
                     button1_Click(sender, e);
@@ -178,7 +203,9 @@ namespace WindowsFormsApp7
 
 
 
+
         }
+       
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
@@ -194,6 +221,9 @@ namespace WindowsFormsApp7
         {
 
         }
+
+        
+
     }
 }
 
