@@ -28,7 +28,7 @@ namespace WindowsFormsApp7
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            listView1.FullRowSelect = true;
         }
         private void textBox1_TextChanged(object sender, EventArgs e)   // строка куда вводим путь
         {
@@ -85,7 +85,7 @@ namespace WindowsFormsApp7
 
                     }
                 }
-                catch { listView1.Items.Add("Папка недоступна"); }
+                catch { }
 
                 try
                 {
@@ -126,7 +126,10 @@ namespace WindowsFormsApp7
 
                 }
             }
-            catch { return totalSize; }
+            catch 
+            {               
+                return totalSize;               
+            }
 
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
             foreach (DirectoryInfo dir in directories)
