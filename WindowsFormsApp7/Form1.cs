@@ -16,6 +16,8 @@ using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using System.Linq.Expressions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolBar;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace WindowsFormsApp7
 {
@@ -219,8 +221,59 @@ namespace WindowsFormsApp7
 
         }
 
-        
 
+
+        private void button1_Click_3(object sender, EventArgs e)                // сохранение listview1 в файл xml
+        {
+            if (listView1.Items.Count != 0)                                     // проверка на пустоту listview1
+            {
+                string savefilepath = "base.xml";              
+                XDocument doc = new XDocument(                                  // Создаем файл
+                new XElement("folder",
+                    from ListViewItem item in listView1.Items                   // проходимся по строчкам
+                    select new XElement("item",
+                        from int i in Enumerable.Range(0, item.SubItems.Count)     
+                        select new XElement($"column{i}", item.SubItems[i].Text))));
+                doc.Save(savefilepath);
+
+                MessageBox.Show(
+                   "Файл сохранен!",
+                   "Сообщение",
+                   MessageBoxButtons.OK,
+                   MessageBoxIcon.Information,
+                   MessageBoxDefaultButton.Button1,
+                   MessageBoxOptions.DefaultDesktopOnly);
+            }
+            else                                                                //если listview1 пустой
+            {
+                MessageBox.Show(
+                    "Список пуст",
+                    "Сообщение",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);                        
+            }
+           
+            /* XDocument doc = new XDocument();
+                 XElement folder = new XElement("Folder");
+                 doc.Add(folder);
+             foreach (ListViewItem item in listView1.Items)
+             {
+                 XElement items = new XElement("item");
+                 for (int i = 0; i < item.SubItems.Count; i++)
+                 {
+                     new XElement(listView1.Items[i].SubItems[1].Text);
+                     new XElement(listView1.Items[i].SubItems[2].Text);
+                     new XElement(listView1.Items[i].SubItems[3].Text);
+                     new XElement(listView1.Items[i].SubItems[4].Text);
+
+                 }
+             }*/
+
+
+
+        }
     }
 }
 
