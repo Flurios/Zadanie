@@ -18,6 +18,7 @@ using System.Linq.Expressions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolBar;
 using System.Xml;
 using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace WindowsFormsApp7
 {
@@ -31,11 +32,11 @@ namespace WindowsFormsApp7
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            listView1.FullRowSelect = true;            
+            listView1.FullRowSelect = true;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)   // строка куда вводим путь
-        {            
+        {
 
         }
 
@@ -70,14 +71,14 @@ namespace WindowsFormsApp7
                 if (Directory.GetParent(path) != null)
                 {
                     listView1.Items.Insert(0, new ListViewItem(new string[] { "...", "", "", "" }));               // выводим троеточие если существует путь наверх (назад по папкам)
-                }                
+                }
                 try
                 {
                     string[] dirs = Directory.GetDirectories(path);
                     foreach (string directory in dirs)
-                    {                       
+                    {
                         DirectoryInfo dir = new DirectoryInfo(directory);
-                        
+
                         if (CalculateFolderSize(dir.FullName) < 0)                                                  // проверка на доступность папки
                         {
                             listView1.Items.Add(new ListViewItem(new string[] { dir.Name, "-", "Папка", "Нет доступа" })).BackColor = Color.Gainsboro;
@@ -121,7 +122,7 @@ namespace WindowsFormsApp7
             {
                 button1_Click(sender, e);
             }
-        } 
+        }
 
         private double CalculateFolderSize(string dirpath)    // высчитывание размера папки и перевод в Кб
         {
@@ -142,9 +143,9 @@ namespace WindowsFormsApp7
             {
                 return -1;                                  // возвращаем -1 если папка недоступна
             }
-            
+
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
-            
+
             foreach (DirectoryInfo dir in directories)
             {
                 if (CalculateFolderSize(dir.FullName) > 0)               // если значение размера отрицательное то не складываем его
@@ -152,11 +153,11 @@ namespace WindowsFormsApp7
                     totalSize += CalculateFolderSize(dir.FullName);
                 }
             }
-            return totalSize;           
+            return totalSize;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
-        {           
+        {
 
         }
 
@@ -167,7 +168,7 @@ namespace WindowsFormsApp7
 
         private void listView1_MouseDoubleClick_1(object sender, MouseEventArgs e)
         {
-            int ind = listView1.SelectedIndices[0];                                                           
+            int ind = listView1.SelectedIndices[0];
             string test = listView1.Items[ind].SubItems[2].Text;   // информация в столбце "Тип"
             string Namefolder = listView1.Items[ind].Text;        // считывание названия папки
             if (test == "Папка")
@@ -225,53 +226,90 @@ namespace WindowsFormsApp7
 
         private void button1_Click_3(object sender, EventArgs e)                // сохранение listview1 в файл xml
         {
-            if (listView1.Items.Count != 0)                                     // проверка на пустоту listview1
-            {
-                string savefilepath = "base.xml";              
-                XDocument doc = new XDocument(                                  // Создаем файл
-                new XElement("folder",
-                    from ListViewItem item in listView1.Items                   // проходимся по строчкам
-                    select new XElement("item",
-                        from int i in Enumerable.Range(0, item.SubItems.Count)     
-                        select new XElement($"column{i}", item.SubItems[i].Text))));
-                doc.Save(savefilepath);
+            /* if (listView1.Items.Count != 0)                                     // проверка на пустоту listview1
+              {
+                  string savefilepath = "base.xml";              
+                  XDocument doc = new XDocument(                                  // Создаем файл
+                  new XElement("folder",
+                      from ListViewItem item in listView1.Items                   // проходимся по строчкам
+                      select new XElement("item",
+                          from int i in Enumerable.Range(0, item.SubItems.Count)     
+                          select new XElement($"column{i}", item.SubItems[i].Text))));
+                  doc.Save(savefilepath);
 
+                  MessageBox.Show(
+                     "Файл сохранен!",
+                     "Сообщение",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Information,
+                     MessageBoxDefaultButton.Button1,
+                     MessageBoxOptions.DefaultDesktopOnly);
+              }
+              else                                                                //если listview1 пустой
+              {
+                  MessageBox.Show(
+                      "Список пуст",
+                      "Сообщение",
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Error,
+                      MessageBoxDefaultButton.Button1,
+                      MessageBoxOptions.DefaultDesktopOnly);                        
+              }*/
+
+            string savefilepath = "base.xml";
+            XDocument doc = new XDocument();
+            XElement data = new XElement("Data");
+            doc.Add(data);
+            XElement element1 = new XElement("Folders");
+            data.Add(element1);
+            XElement element2 = new XElement("Files");
+            data.Add(element2);
+            int k = 0;
+            if (listView1.Items.Count != 0)                                   // Проверка не пустой ли listview1
+            {
+                for (int i = 0; i < listView1.Items.Count; i++)
+                {
+                    string inf = listView1.Items[i].SubItems[2].Text;        // Информация в столбце тип
+                    string inf1 = listView1.Items[i].SubItems[0].Text;       // Информация в столбце Имя файла
+                    if (inf == "Папка")                                      // Вывод информации с папками
+                    {
+                        XElement element = new XElement("folder" + i);
+                        for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
+                        {
+                            element.Add(new XElement("subitem", new XAttribute("column" + j, listView1.Items[i].SubItems[j].Text)));
+                        }
+                        element1.Add(element);
+                    }
+                    else if (inf1 != "...")                                 // Вывод информации с файлами и отсекание первой строчки если соддержит "..."
+                    {
+                        XElement elementx = new XElement("file" + k);
+                        for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
+                        {
+                            elementx.Add(new XElement("subitem", new XAttribute("column" + j, listView1.Items[i].SubItems[j].Text)));
+                        }
+                        element2.Add(elementx);
+                        k++;
+                    }
+                }
+                doc.Save(savefilepath);
                 MessageBox.Show(
-                   "Файл сохранен!",
-                   "Сообщение",
-                   MessageBoxButtons.OK,
-                   MessageBoxIcon.Information,
-                   MessageBoxDefaultButton.Button1,
-                   MessageBoxOptions.DefaultDesktopOnly);
+                     "Файл сохранен!",
+                     "Сообщение",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Information,
+                     MessageBoxDefaultButton.Button1,
+                     MessageBoxOptions.DefaultDesktopOnly);
             }
-            else                                                                //если listview1 пустой
+            else if (listView1.Items.Count == 0)                                                  // Если пустой Listview1
             {
                 MessageBox.Show(
                     "Список пуст",
                     "Сообщение",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
+                    MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.DefaultDesktopOnly);                        
+                    MessageBoxOptions.DefaultDesktopOnly);
             }
-           
-            /* XDocument doc = new XDocument();
-                 XElement folder = new XElement("Folder");
-                 doc.Add(folder);
-             foreach (ListViewItem item in listView1.Items)
-             {
-                 XElement items = new XElement("item");
-                 for (int i = 0; i < item.SubItems.Count; i++)
-                 {
-                     new XElement(listView1.Items[i].SubItems[1].Text);
-                     new XElement(listView1.Items[i].SubItems[2].Text);
-                     new XElement(listView1.Items[i].SubItems[3].Text);
-                     new XElement(listView1.Items[i].SubItems[4].Text);
-
-                 }
-             }*/
-
-
 
         }
     }

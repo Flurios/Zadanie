@@ -68,7 +68,7 @@
             this.columnHeader3,
             this.columnHeader4});
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(12, 82);
+            this.listView1.Location = new System.Drawing.Point(12, 35);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(757, 356);
             this.listView1.TabIndex = 2;
@@ -81,22 +81,22 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Имя файла";
-            this.columnHeader1.Width = 100;
+            this.columnHeader1.Width = 136;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Дата изменения";
-            this.columnHeader2.Width = 108;
+            this.columnHeader2.Width = 137;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Тип";
-            this.columnHeader3.Width = 108;
+            this.columnHeader3.Width = 132;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Размер файла";
-            this.columnHeader4.Width = 102;
+            this.columnHeader4.Width = 158;
             // 
             // textBox1
             // 
@@ -109,7 +109,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(694, 53);
+            this.button1.Location = new System.Drawing.Point(694, 415);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 4;
