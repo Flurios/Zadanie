@@ -276,7 +276,7 @@ namespace WindowsFormsApp7
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.DefaultDesktopOnly);
             }
-            else if (listView1.Items.Count == 1 & listView1.Items[0].Text == "...") 
+            else if (listView1.Items.Count == 1 & listView1.Items[0].Text == "...")   //    Если listview1 содержит только троеточие
             { 
                 MessageBox.Show(
                     "Сохранение отсутствует в пустой папке",
@@ -287,7 +287,7 @@ namespace WindowsFormsApp7
                     MessageBoxOptions.DefaultDesktopOnly);
             
             }
-             else                                  // Проверка не пустой ли listview1
+             else
             {
                 for (int i = 0; i < listView1.Items.Count; i++)
                 {
