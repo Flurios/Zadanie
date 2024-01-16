@@ -255,7 +255,7 @@ namespace WindowsFormsApp7
                       MessageBoxDefaultButton.Button1,
                       MessageBoxOptions.DefaultDesktopOnly);                        
               }*/
-
+            var nameList = new List<string>() { "name", "change_data", "type", "size", };    // список для заполнения XML
             string savefilepath = "base.xml";
             XDocument doc = new XDocument();
             XElement data = new XElement("Data");
@@ -265,7 +265,29 @@ namespace WindowsFormsApp7
             XElement element2 = new XElement("Files");
             data.Add(element2);
             int k = 0;
-            if (listView1.Items.Count != 0)                                   // Проверка не пустой ли listview1
+            
+            if (listView1.Items.Count == 0)                                                  // Если пустой Listview1
+            {
+                MessageBox.Show(
+                    "Список пуст",
+                    "Сообщение",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);
+            }
+            else if (listView1.Items.Count == 1 & listView1.Items[0].Text == "...") 
+            { 
+                MessageBox.Show(
+                    "Сохранение отсутствует в пустой папке",
+                    "Сообщение",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1,
+                    MessageBoxOptions.DefaultDesktopOnly);
+            
+            }
+             else                                  // Проверка не пустой ли listview1
             {
                 for (int i = 0; i < listView1.Items.Count; i++)
                 {
@@ -275,8 +297,8 @@ namespace WindowsFormsApp7
                     {
                         XElement element = new XElement("folder" + i);
                         for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
-                        {
-                            element.Add(new XElement("subitem", new XAttribute("column" + j, listView1.Items[i].SubItems[j].Text)));
+                        {                            
+                            element.Add(new XElement(nameList[j], listView1.Items[i].SubItems[j].Text));
                         }
                         element1.Add(element);
                     }
@@ -285,7 +307,7 @@ namespace WindowsFormsApp7
                         XElement elementx = new XElement("file" + k);
                         for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
                         {
-                            elementx.Add(new XElement("subitem", new XAttribute("column" + j, listView1.Items[i].SubItems[j].Text)));
+                            elementx.Add(new XElement(nameList[j], listView1.Items[i].SubItems[j].Text));
                         }
                         element2.Add(elementx);
                         k++;
@@ -300,17 +322,6 @@ namespace WindowsFormsApp7
                      MessageBoxDefaultButton.Button1,
                      MessageBoxOptions.DefaultDesktopOnly);
             }
-            else if (listView1.Items.Count == 0)                                                  // Если пустой Listview1
-            {
-                MessageBox.Show(
-                    "Список пуст",
-                    "Сообщение",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.DefaultDesktopOnly);
-            }
-
         }
     }
 }
