@@ -225,43 +225,11 @@ namespace WindowsFormsApp7
 
 
         private void button1_Click_3(object sender, EventArgs e)                // сохранение listview1 в файл xml
-        {
-
-
-
-            /* if (listView1.Items.Count != 0)                                     // проверка на пустоту listview1
-              {
-                  string savefilepath = "base.xml";              
-                  XDocument doc = new XDocument(                                  // Создаем файл
-                  new XElement("folder",
-                      from ListViewItem item in listView1.Items                   // проходимся по строчкам
-                      select new XElement("item",
-                          from int i in Enumerable.Range(0, item.SubItems.Count)     
-                          select new XElement($"column{i}", item.SubItems[i].Text))));
-                  doc.Save(savefilepath);
-
-                  MessageBox.Show(
-                     "Файл сохранен!",
-                     "Сообщение",
-                     MessageBoxButtons.OK,
-                     MessageBoxIcon.Information,
-                     MessageBoxDefaultButton.Button1,
-                     MessageBoxOptions.DefaultDesktopOnly);
-              }
-              else                                                                //если listview1 пустой
-              {
-                  MessageBox.Show(
-                      "Список пуст",
-                      "Сообщение",
-                      MessageBoxButtons.OK,
-                      MessageBoxIcon.Error,
-                      MessageBoxDefaultButton.Button1,
-                      MessageBoxOptions.DefaultDesktopOnly);                        
-              }*/
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "XML files (*.xml)|*.xml| All files (*.*)|*.*";
-            saveFileDialog.FilterIndex = 1;
-            saveFileDialog.RestoreDirectory = true;
+        {           
+            SaveFileDialog savefilepath = new SaveFileDialog();
+            savefilepath.Filter = "XML files (*.xml)|*.xml| All files (*.*)|*.*";
+            savefilepath.FilterIndex = 1;
+            savefilepath.RestoreDirectory = true;
             var nameList = new List<string>() { "name", "change_data", "type", "size" };    // список для заполнения XML               
             XDocument doc = new XDocument();
             XElement data = new XElement("Data");
@@ -270,7 +238,8 @@ namespace WindowsFormsApp7
             data.Add(element1);
             XElement element2 = new XElement("Files");
             data.Add(element2);
-            int k = 0;
+            int k = 1;
+         
 
             if (listView1.Items.Count == 0)                                                  // Если пустой Listview1
             {
@@ -296,7 +265,7 @@ namespace WindowsFormsApp7
             else
             {
 
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                if (savefilepath.ShowDialog() == DialogResult.OK)
                 {
 
 
@@ -325,7 +294,7 @@ namespace WindowsFormsApp7
                         }
                     }
                 }
-                doc.Save(saveFileDialog.FileName);
+                doc.Save(savefilepath.FileName);
                 MessageBox.Show(
                      "Файл сохранен!",
                      "Сообщение",
