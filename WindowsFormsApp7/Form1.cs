@@ -226,6 +226,9 @@ namespace WindowsFormsApp7
 
         private void button1_Click_3(object sender, EventArgs e)                // сохранение listview1 в файл xml
         {
+
+
+
             /* if (listView1.Items.Count != 0)                                     // проверка на пустоту listview1
               {
                   string savefilepath = "base.xml";              
@@ -255,8 +258,11 @@ namespace WindowsFormsApp7
                       MessageBoxDefaultButton.Button1,
                       MessageBoxOptions.DefaultDesktopOnly);                        
               }*/
-            var nameList = new List<string>() { "name", "change_data", "type", "size", };    // список для заполнения XML
-            string savefilepath = "base.xml";
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML files (*.xml)|*.xml| All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.RestoreDirectory = true;
+            var nameList = new List<string>() { "name", "change_data", "type", "size" };    // список для заполнения XML               
             XDocument doc = new XDocument();
             XElement data = new XElement("Data");
             doc.Add(data);
@@ -265,7 +271,7 @@ namespace WindowsFormsApp7
             XElement element2 = new XElement("Files");
             data.Add(element2);
             int k = 0;
-            
+
             if (listView1.Items.Count == 0)                                                  // Если пустой Listview1
             {
                 MessageBox.Show(
@@ -277,7 +283,7 @@ namespace WindowsFormsApp7
                     MessageBoxOptions.DefaultDesktopOnly);
             }
             else if (listView1.Items.Count == 1 & listView1.Items[0].Text == "...")   //    Если listview1 содержит только троеточие
-            { 
+            {
                 MessageBox.Show(
                     "Сохранение отсутствует в пустой папке",
                     "Сообщение",
@@ -285,35 +291,41 @@ namespace WindowsFormsApp7
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.DefaultDesktopOnly);
-            
+
             }
-             else
+            else
             {
-                for (int i = 0; i < listView1.Items.Count; i++)
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string inf = listView1.Items[i].SubItems[2].Text;        // Информация в столбце тип
-                    string inf1 = listView1.Items[i].SubItems[0].Text;       // Информация в столбце Имя файла
-                    if (inf == "Папка")                                      // Вывод информации с папками
+
+
+                    for (int i = 0; i < listView1.Items.Count; i++)
                     {
-                        XElement element = new XElement("folder" + i);
-                        for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
-                        {                            
-                            element.Add(new XElement(nameList[j], listView1.Items[i].SubItems[j].Text));
-                        }
-                        element1.Add(element);
-                    }
-                    else if (inf1 != "...")                                 // Вывод информации с файлами и отсекание первой строчки если соддержит "..."
-                    {
-                        XElement elementx = new XElement("file" + k);
-                        for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
+                        string inf = listView1.Items[i].SubItems[2].Text;        // Информация в столбце тип
+                        string inf1 = listView1.Items[i].SubItems[0].Text;       // Информация в столбце Имя файла
+                        if (inf == "Папка")                                      // Вывод информации с папками
                         {
-                            elementx.Add(new XElement(nameList[j], listView1.Items[i].SubItems[j].Text));
+                            XElement element = new XElement("folder" + i);
+                            for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
+                            {
+                                element.Add(new XElement(nameList[j], listView1.Items[i].SubItems[j].Text));
+                            }
+                            element1.Add(element);
                         }
-                        element2.Add(elementx);
-                        k++;
+                        else if (inf1 != "...")                                 // Вывод информации с файлами и отсекание первой строчки если соддержит "..."
+                        {
+                            XElement elementx = new XElement("file" + k);
+                            for (int j = 0; j < listView1.Items[i].SubItems.Count; j++)
+                            {
+                                elementx.Add(new XElement(nameList[j], listView1.Items[i].SubItems[j].Text));
+                            }
+                            element2.Add(elementx);
+                            k++;
+                        }
                     }
                 }
-                doc.Save(savefilepath);
+                doc.Save(saveFileDialog.FileName);
                 MessageBox.Show(
                      "Файл сохранен!",
                      "Сообщение",
@@ -322,6 +334,7 @@ namespace WindowsFormsApp7
                      MessageBoxDefaultButton.Button1,
                      MessageBoxOptions.DefaultDesktopOnly);
             }
+            
         }
     }
 }
