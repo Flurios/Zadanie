@@ -305,6 +305,30 @@ namespace WindowsFormsApp7
             }
             
         }
+
+        private void button2_Click(object sender, EventArgs e)              // кнопка для загрузки файла
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                listView1.Items.Clear();
+                XDocument doc = XDocument.Load(openFileDialog.FileName);     // загрузка xml файла
+                
+                foreach (XElement folder in doc.Descendants())      
+                {
+                    string name = folder.Element("name")?.Value;
+                    string changeData = folder.Element("change_data")?.Value;
+                    string type = folder.Element("type")?.Value;
+                    string size = folder.Element("size")?.Value;
+                    ListViewItem item = new ListViewItem(new[] { name, changeData, type, size });                    
+                    listView1.Items.Add(item);
+                }
+            }
+        }
     }
 }
 
