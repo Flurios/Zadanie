@@ -103,7 +103,6 @@ namespace WindowsFormsApp7
                 }
                 catch { }
             }
-
             else
             {
                 MessageBox.Show(
@@ -145,7 +144,6 @@ namespace WindowsFormsApp7
             }
 
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
-
             foreach (DirectoryInfo dir in directories)
             {
                 if (CalculateFolderSize(dir.FullName) > 0)               // если значение размера отрицательное то не складываем его
@@ -203,7 +201,6 @@ namespace WindowsFormsApp7
                 string directoryPath = textBox1.Text;
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
                 DirectoryInfo parentDirectoryInfo = directoryInfo.Parent;
-
                 if (Directory.Exists(textBox1.Text))                                              // проверка существования пути
                 {
                     textBox1.Text = parentDirectoryInfo.FullName;
@@ -225,21 +222,25 @@ namespace WindowsFormsApp7
 
 
         private void button1_Click_3(object sender, EventArgs e)                // сохранение listview1 в файл xml
-        {           
+        {
+            int k = 1;
+
             SaveFileDialog savefilepath = new SaveFileDialog();
             savefilepath.Filter = "XML files (*.xml)|*.xml| All files (*.*)|*.*";
             savefilepath.FilterIndex = 1;
             savefilepath.RestoreDirectory = true;
-            var nameList = new List<string>() { "name", "change_data", "type", "size" };    // список для заполнения XML               
+
+            var nameList = new List<string>() { "name", "change_data", "type", "size" };    // список для заполнения XML
+                                                                                            
             XDocument doc = new XDocument();
             XElement data = new XElement("Data");
             doc.Add(data);
             XElement element1 = new XElement("Folders");
             data.Add(element1);
             XElement element2 = new XElement("Files");
-            data.Add(element2);
-            int k = 1;
-         
+            data.Add(element2);            
+            XElement element3 = new XElement("Path");
+            data.Add(element3);         
 
             if (listView1.Items.Count == 0)                                                  // Если пустой Listview1
             {
@@ -260,15 +261,11 @@ namespace WindowsFormsApp7
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1,
                     MessageBoxOptions.DefaultDesktopOnly);
-
             }
             else
             {
-
                 if (savefilepath.ShowDialog() == DialogResult.OK)
                 {
-
-
                     for (int i = 0; i < listView1.Items.Count; i++)
                     {
                         string inf = listView1.Items[i].SubItems[2].Text;        // Информация в столбце тип
@@ -293,20 +290,20 @@ namespace WindowsFormsApp7
                             k++;
                         }
                     }
-                }
-                doc.Save(savefilepath.FileName);
-                MessageBox.Show(
+                    element3.Add(textBox1.Text);                        // сохранение пути файла который сохранили в xml
+                    doc.Save(savefilepath.FileName);
+                    MessageBox.Show(
                      "Файл сохранен!",
                      "Сообщение",
                      MessageBoxButtons.OK,
                      MessageBoxIcon.Information,
                      MessageBoxDefaultButton.Button1,
                      MessageBoxOptions.DefaultDesktopOnly);
-            }
-            
+                }  
+            }            
         }
 
-        private void button2_Click(object sender, EventArgs e)              // кнопка для загрузки файла
+        private void button2_Click(object sender, EventArgs e)              // кнопка для загрузки XML файла
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
@@ -317,14 +314,30 @@ namespace WindowsFormsApp7
             {
                 listView1.Items.Clear();
                 XDocument doc = XDocument.Load(openFileDialog.FileName);     // загрузка xml файла
-                
-                foreach (XElement folder in doc.Descendants())      
+                textBox1.Text = doc.Element("Data")?.Element("Path").Value; // вывод пути в textbox
+                if (Directory.GetParent(textBox1.Text) != null)
+                {
+                    listView1.Items.Insert(0, new ListViewItem(new string[] { "...", "", "", "" }));
+                }              
+            
+                var papka = doc.Element("Data")?.Element("Folders");        // доступ к папкам в xml
+                var file = doc.Element("Data")?.Element("Files");           // достпу к файлам в xml
+                foreach (XElement folder in papka.Elements())
                 {
                     string name = folder.Element("name")?.Value;
                     string changeData = folder.Element("change_data")?.Value;
                     string type = folder.Element("type")?.Value;
                     string size = folder.Element("size")?.Value;
-                    ListViewItem item = new ListViewItem(new[] { name, changeData, type, size });                    
+                    ListViewItem item = new ListViewItem(new[] { name, changeData, type, size });
+                    listView1.Items.Add(item).BackColor = Color.Gainsboro; ;
+                }
+                foreach (XElement folder in file.Elements())
+                {
+                    string name = folder.Element("name")?.Value;
+                    string changeData = folder.Element("change_data")?.Value;
+                    string type = folder.Element("type")?.Value;
+                    string size = folder.Element("size")?.Value;
+                    ListViewItem item = new ListViewItem(new[] { name, changeData, type, size });
                     listView1.Items.Add(item);
                 }
             }
